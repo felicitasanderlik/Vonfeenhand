@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produkt – von Feenhand</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  * { -webkit-tap-highlight-color: transparent; }
+
+  .product-page { padding-top: 140px; min-height: 100vh; }
+
+  .product-back {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-light); padding: 0.6rem 1.2rem;
+    background: none; border: none; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .product-back:hover { color: var(--sage-dark); }
+
+  /* ── DESKTOP LAYOUT ── */
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 0.5rem 3rem 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .product-gallery { position: sticky; top: 160px; }
+  .product-main-img {
+    aspect-ratio: 4/5;
+    background: var(--sage-pale);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+    position: relative;
+  }
+  .product-main-img img { width:100%; height:100%; object-fit:cover; transition: opacity 0.3s; }
+  .product-thumbs { display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .product-thumb {
+    width:58px; height:58px; border-radius:3px; overflow:hidden;
+    cursor:pointer; border:2px solid transparent; transition:border-color 0.2s;
+  }
+  .product-thumb.active { border-color: var(--sage); }
+  .product-thumb img { width:100%; height:100%; object-fit:cover; }
+
+  /* ── INFO ── */
+  .product-cat-tag {
+    font-size: 0.6rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-light);
+    margin-bottom: 0.4rem;
+  }
+  .product-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400; line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .product-price-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 300;
+    margin-bottom: 1.2rem; color: var(--text);
+  }
+  .product-desc-text {
+    font-size: 0.88rem; font-weight: 300;
+    line-height: 1.8; color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+  .product-section-label {
+    font-size: 0.62rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--text-light);
+    margin-bottom: 0.5rem; display: block;
+  }
+  .color-display { display:flex; align-items:center; gap:0.6rem; margin-bottom:1.2rem; }
+
+  /* ── INDIVIDUALISIERUNG ── */
+  .custom-section {
+    background: var(--sage-pale); border-radius:5px;
+    padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+  }
+  .custom-section-header {
+    display:flex; justify-content:space-between;
+    align-items:center; cursor:pointer;
+  }
+  .custom-section-title {
+    font-size: 0.8rem; font-weight:500;
+    color: var(--sage-dark);
+    display:flex; align-items:center; gap:0.4rem;
+  }
+  .custom-price-badge {
+    font-size: 0.68rem; background: var(--sage);
+    color: white; padding: 0.18rem 0.55rem; border-radius:10px;
+  }
+  .custom-panel { margin-top:0.8rem; display:none; }
+  .custom-panel.open { display:block; }
+  .custom-hint { font-size:0.75rem; color:var(--text-light); margin-bottom:0.6rem; }
+  .customer-slots { display:flex; gap:0.4rem; margin-bottom:0.6rem; align-items:center; }
+  .cust-slot {
+    width:44px; height:28px; border-radius:4px;
+    border:2px solid transparent; cursor:pointer;
+    font-size:0.62rem; color:white;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color 0.2s;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+  .cust-slot.active-slot { border-color:var(--sage-dark); box-shadow:0 0 0 2px var(--sage-pale); }
+  .customer-palette {
+    display:flex; flex-wrap:wrap; gap:0.4rem;
+    padding:0.7rem; background:white; border-radius:4px; margin-bottom:0.6rem;
+  }
+  .cust-swatch {
+    width:28px; height:28px; border-radius:50%; cursor:pointer;
+    border:2px solid transparent; transition:transform 0.15s, border-color 0.15s;
+    flex-shrink:0;
+  }
+  .cust-swatch.selected { border-color:var(--sage); transform:scale(1.15); }
+
+  /* ── CTA ── */
+  .add-to-cart-section { display:flex; flex-direction:column; gap:0.6rem; margin-top:1.2rem; }
+  .stock-info { font-size:0.75rem; color:var(--text-light); }
+  .stock-info.low { color:#e67e22; }
+  .stock-info.out { color:#c0392b; }
+  .btn-add-large {
+    padding: 0.9rem 2rem;
+    background: var(--sage-dark); color: white;
+    border: none; border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.14em;
+    text-transform: uppercase; cursor: pointer;
+    width: 100%; transition: background 0.2s;
+  }
+  .btn-add-large:hover { background: #3d5c3a; }
+  .btn-add-large:disabled { background:var(--border); color:var(--text-light); cursor:not-allowed; }
+
+  .product-loading {
+    display:flex; align-items:center; justify-content:center;
+    min-height:50vh; color:var(--text-light);
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem;
+  }
+
+  .swipe-gallery {
+    position: relative; overflow:hidden;
+    aspect-ratio: 4/3; background:var(--sage-pale);
+  }
+  .swipe-track { display:flex; height:100%; transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+  .swipe-slide { min-width:100%; height:100%; flex-shrink:0; }
+  .swipe-slide img { width:100%; height:100%; object-fit:cover; }
+  .swipe-dots { position:absolute; bottom:0.6rem; left:50%; transform:translateX(-50%); display:flex; gap:0.4rem; }
+  .swipe-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); transition:background 0.2s; }
+  .swipe-dot.active { background:white; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .product-page { padding-top: 130px; }
+
+    .product-layout {
+      grid-template-columns: 1fr;
+      padding: 0 0 5rem;
+      gap: 0;
+    }
+    .product-gallery { position: static; }
+    .product-main-img { display:none; }
+    .product-thumbs { display:none; }
+    .product-info-col { padding: 1rem 1.2rem 1.5rem; }
+
+    /* Sticky CTA */
+    .sticky-cta {
+      position: fixed; bottom:0; left:0; right:0;
+      background: white; border-top:1px solid var(--border);
+      padding: 0.7rem 1.2rem;
+      display: flex; align-items:center; gap:0.8rem;
+      z-index: 40; box-shadow: 0 -3px 12px rgba(0,0,0,0.06);
+    }
+    .sticky-cta-info { flex:1; min-width:0; }
+    .sticky-cta-name { font-size:0.82rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sticky-cta-price { font-size:0.78rem; color:var(--text-light); }
+    .sticky-cta-btn {
+      padding: 0.65rem 1.2rem;
+      background: var(--sage-dark); color:white;
+      border:none; border-radius:2px;
+      font-family:'Jost',sans-serif;
+      font-size:0.68rem; letter-spacing:0.12em;
+      text-transform:uppercase; cursor:pointer;
+      white-space:nowrap; flex-shrink:0;
+      transition: background 0.2s;
+    }
+    .sticky-cta-btn:hover { background: #3d5c3a; }
+    .sticky-cta-btn:disabled { background:var(--border); color:var(--text-light); cursor:not-allowed; }
+    .add-to-cart-section { display:none; }
+  }
+  @media (min-width: 769px) {
+    .sticky-cta { display:none !important; }
+    .swipe-gallery { display:none; }
+  }
+</style>
+</head>
+<body>
+
+
+
+<div class="product-page">
+  <button class="product-back" onclick="history.back()">← Zurück zum Shop</button>
+  <div id="productContent" class="product-loading">Wird geladen...</div>
+</div>
+
+
+</div>
+
+
+<script src="header.js"></script>
+<script src="app.js"></script>
+<script>
+const SB_URL = 'https://uveihedjoqrdejycqqeu.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWloZWRqb3FyZGVqeWNxcWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTA4MDYsImV4cCI6MjA5MTQ4NjgwNn0.H6k7qrc_YMWgvKDqk-_nIYKQjJqVogBgx6EUFOTIhvo';
+
+let product = null;
+let custSlots = ['#CCCCCC'];
+let custActiveSlot = 0;
+let custLayout = 1;
+let currentImgIndex = 0;
+
+function getImageUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `${SB_URL}/storage/v1/object/public/images/${path}`;
+}
+
+// Farb-Kreis SVG
+function colorCircleSVG(colorData, size = 32) {
+  if (!colorData || !colorData.colors) return '';
+  const n = colorData.colors.length;
+  const slotH = (size - 4) / n;
+  let rects = '';
+  for (let i = 0; i < n; i++) {
+    rects += `<rect x="2" y="${2 + i * slotH}" width="${size-4}" height="${slotH}" fill="${colorData.colors[i]}"/>`;
+  }
+  const r = (size-4)/2, cx = size/2, cy = size/2;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex-shrink:0;">
+    <defs><clipPath id="cp${size}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>
+    <g clip-path="url(#cp${size})">${rects}</g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ddd" stroke-width="1.5"/>
+  </svg>`;
+}
+
+// Produkt laden
+async function loadProduct() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) { document.getElementById('productContent').innerHTML = '<div class="product-loading">Produkt nicht gefunden.</div>'; return; }
+
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/products?id=eq.${id}`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    const data = await res.json();
+    if (!data || !data[0]) { document.getElementById('productContent').innerHTML = '<div class="product-loading">Produkt nicht gefunden.</div>'; return; }
+    product = data[0];
+    renderProduct();
+  } catch(e) {
+    document.getElementById('productContent').innerHTML = '<div class="product-loading">Fehler beim Laden.</div>';
+  }
+}
+
+function renderProduct() {
+  const p = product;
+  const colorData = p.color_data ? JSON.parse(p.color_data) : null;
+  const customColors = p.custom_colors || [];
+  const images = p.images || [];
+
+  document.title = `${p.name} – von Feenhand`;
+
+  const stockInfo = p.stock === 0
+    ? '<span class="stock-info out">Ausverkauft</span>'
+    : p.stock <= 3
+    ? `<span class="stock-info low">Nur noch ${p.stock} verfügbar</span>`
+    : `<span class="stock-info">${p.stock} verfügbar</span>`;
+
+  // Bilder
+  // Swipe Galerie (Mobile)
+  const swipeGallery = images.length > 0 ? `
+    <div class="swipe-gallery" id="swipeGallery">
+      <div class="swipe-track" id="swipeTrack">
+        ${images.map(img => `
+          <div class="swipe-slide">
+            <img src="${getImageUrl(img)}" alt="${p.name}">
+          </div>`).join('')}
+      </div>
+      ${images.length > 1 ? `<div class="swipe-dots">
+        ${images.map((_,i) => `<div class="swipe-dot ${i===0?'active':''}" data-idx="${i}"></div>`).join('')}
+      </div>` : ''}
+    </div>` : '';
+
+  const mainImg = images[0]
+    ? `<img id="mainImg" src="${getImageUrl(images[0])}" alt="${p.name}">`
+    : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--sage);opacity:0.3;">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="16" width="48" height="36" rx="2"/><circle cx="24" cy="30" r="6"/><path d="M8 42l12-10 10 8 8-6 18 18"/></svg>
+       </div>`;
+
+  const thumbs = images.length > 1 ? `
+    <div class="product-thumbs">
+      ${images.map((img, i) => `
+        <div class="product-thumb ${i===0?'active':''}" onclick="switchImage(${i})">
+          <img src="${getImageUrl(img)}" alt="">
+        </div>
+      `).join('')}
+    </div>` : '';
+
+  // Farben
+  const colorSection = colorData ? `
+    <span class="product-section-label">Farbe</span>
+    <div class="color-display">
+      ${colorCircleSVG(colorData, 44)}
+
+    </div>` : '';
+
+  // Individualisierung
+  const customSection = p.customizable ? `
+    <div class="custom-section">
+      <div class="custom-section-header" onclick="toggleCustomPanel()">
+        <span class="custom-section-title">
+          ✦ Individualisierbar
+          <span class="custom-price-badge">+€ ${(p.custom_price||0).toFixed(2).replace('.',',')}</span>
+        </span>
+        <span id="customChevron" style="color:var(--sage-dark);font-size:1rem;">▾</span>
+      </div>
+      <div class="custom-panel" id="customPanel">
+        <p class="custom-hint">Wähle deine eigene Farbkombination:</p>
+
+        <!-- Layout fix vom Artikel -->
+
+        <!-- Slots -->
+        <div class="customer-slots" id="custSlotRow" style="display:flex;gap:0.4rem;align-items:center;margin-bottom:0.8rem;">
+          <div id="custSlots" style="display:flex;gap:0.4rem;"></div>
+          <div style="margin-left:auto;" id="custPreview"></div>
+        </div>
+
+        <!-- Palette -->
+        <div class="customer-palette" id="custPalette">
+          ${customColors.map(hex => `
+            <div class="cust-swatch" data-color="${hex}" style="background:${hex};" onclick="selectCustColor(this)" title="${hex}"></div>
+          `).join('')}
+        </div>
+      </div>
+    </div>` : '';
+
+  document.getElementById('productContent').innerHTML = `
+    <div class="product-layout">
+      <div class="product-gallery">
+        ${swipeGallery}
+        <div class="product-main-img">${mainImg}</div>
+        ${thumbs}
+      </div>
+      <div class="product-info-col">
+        <div class="product-cat-tag">${p.category || ''}</div>
+        <h1 class="product-title">${p.name}</h1>
+        <div class="product-price-display" id="priceDisplay">€ ${(p.price||0).toFixed(2).replace('.',',')}</div>
+        <p class="product-desc-text">${p.description || ''}</p>
+        ${colorSection}
+        ${customSection}
+        <div class="add-to-cart-section">
+          ${stockInfo}
+          <button class="btn-add-large" onclick="addProductToCart()" ${p.stock === 0 ? 'disabled' : ''}>
+            ${p.stock === 0 ? 'Ausverkauft' : 'In den Warenkorb'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  // Swipe Touch Events
+  initSwipe();
+
+  // Init Custom - Layout vom Artikel übernehmen
+  if (p.customizable) {
+    const articleColorData = p.color_data ? JSON.parse(p.color_data) : null;
+    const n = articleColorData ? articleColorData.colors.length : 1;
+    custLayout = n;
+    custSlots = Array(n).fill('#CCCCCC');
+    custActiveSlot = 0;
+    renderCustSlots();
+    updateCustPreview();
+  }
+}
+
+
+function initSwipe() {
+  const gallery = document.getElementById('swipeGallery');
+  const track = document.getElementById('swipeTrack');
+  if (!gallery || !track) return;
+  const slides = track.querySelectorAll('.swipe-slide');
+  const dots = document.querySelectorAll('.swipe-dot');
+  if (slides.length <= 1) return;
+
+  let startX = 0, currentIdx = 0;
+
+  gallery.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  gallery.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0 && currentIdx < slides.length - 1) currentIdx++;
+      else if (diff < 0 && currentIdx > 0) currentIdx--;
+      track.style.transform = `translateX(-${currentIdx * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+    }
+  }, { passive: true });
+}
+
+function layoutSVG(n, size) {
+  const slotH = (size-4)/n;
+  let rects = '';
+  const grays = ['#ddd','#ccc','#bbb','#aaa'];
+  for (let i=0; i<n; i++) rects += `<rect x="2" y="${2+i*slotH}" width="${size-4}" height="${slotH}" fill="${grays[i]}"/>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <defs><clipPath id="lc${n}${size}"><circle cx="${size/2}" cy="${size/2}" r="${(size-4)/2}"/></clipPath></defs>
+    <g clip-path="url(#lc${n}${size})">${rects}</g>
+    <circle cx="${size/2}" cy="${size/2}" r="${(size-4)/2}" fill="none" stroke="#ccc" stroke-width="1"/>
+  </svg>`;
+}
+
+function switchImage(i) {
+  currentImgIndex = i;
+  const mainImg = document.getElementById('mainImg');
+  if (mainImg) mainImg.src = getImageUrl(product.images[i]);
+  document.querySelectorAll('.product-thumb').forEach((t,idx) => t.classList.toggle('active', idx===i));
+}
+
+function toggleCustomPanel() {
+  const panel = document.getElementById('customPanel');
+  const chevron = document.getElementById('customChevron');
+  panel.classList.toggle('open');
+  chevron.textContent = panel.classList.contains('open') ? '▴' : '▾';
+  updatePriceDisplay();
+}
+
+function updatePriceDisplay() {
+  const panel = document.getElementById('customPanel');
+  const isOpen = panel && panel.classList.contains('open');
+  const base = product.price || 0;
+  const extra = isOpen ? (product.custom_price || 0) : 0;
+  const display = document.getElementById('priceDisplay');
+  if (display) display.textContent = `€ ${(base + extra).toFixed(2).replace('.',',')}`;
+}
+
+// Kunden Farbauswahl
+function setCustLayout(n, btn) {
+  custLayout = n;
+  document.querySelectorAll('.cust-layout-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  while (custSlots.length < n) custSlots.push('#CCCCCC');
+  custSlots = custSlots.slice(0, n);
+  custActiveSlot = 0;
+  renderCustSlots();
+  updateCustPreview();
+}
+
+function renderCustSlots() {
+  const row = document.getElementById('custSlots');
+  if (!row) return;
+  row.innerHTML = custSlots.map((c, i) => `
+    <div class="cust-slot ${i===custActiveSlot?'active-slot':''}"
+      style="background:${c};"
+      onclick="setCustActiveSlot(${i})">
+      ${i+1}
+    </div>`).join('');
+}
+
+function setCustActiveSlot(i) {
+  custActiveSlot = i;
+  renderCustSlots();
+  document.querySelectorAll('.cust-swatch').forEach(s => {
+    s.classList.toggle('selected', s.dataset.color === custSlots[i]);
+  });
+}
+
+function selectCustColor(swatch) {
+  const color = swatch.dataset.color;
+  custSlots[custActiveSlot] = color;
+  if (custActiveSlot < custLayout - 1) custActiveSlot++;
+  renderCustSlots();
+  updateCustPreview();
+  document.querySelectorAll('.cust-swatch').forEach(s => s.classList.remove('selected'));
+  swatch.classList.add('selected');
+}
+
+function updateCustPreview() {
+  const el = document.getElementById('custPreview');
+  if (!el) return;
+  el.innerHTML = colorCircleSVG({ layout: custLayout, colors: custSlots }, 36);
+}
+
+function addProductToCart() {
+  const panel = document.getElementById('customPanel');
+  const isCustom = panel && panel.classList.contains('open');
+  const price = (product.price || 0) + (isCustom ? (product.custom_price || 0) : 0);
+  const name = isCustom
+    ? `${product.name} (individuell: ${custSlots.join(', ')})`
+    : product.name;
+  const img = product.images && product.images[0] ? getImageUrl(product.images[0]) : '';
+  addToCart(product.id + (isCustom ? '_custom' : ''), name, price, img);
+  openCart();
+}
+
+// Burger
+function toggleBurger() {
+  const dd = document.getElementById('burgerDropdown');
+  const btn = document.getElementById('burgerBtn');
+  dd.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const dd = document.getElementById('burgerDropdown');
+  const btn = document.getElementById('burgerBtn');
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+
+loadProduct();
+</script>
+</body>
+</html>
