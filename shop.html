@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop – von Feenhand</title>
+<meta name="description" content="Handgefertigte Häkelfiguren kaufen. Jedes Stück ein Unikat aus Wien.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .shop-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 3rem;
+    padding: 4rem 5rem;
+  }
+
+  /* Sidebar Filter */
+  .shop-sidebar { position: sticky; top: 100px; align-self: start; }
+  .sidebar-section { margin-bottom: 2.5rem; }
+  .sidebar-label {
+    font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sage);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .filter-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .filter-list li { }
+  .filter-list button {
+    background: none; border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem; font-weight: 300;
+    color: var(--text-light);
+    cursor: pointer; padding: 0.3rem 0;
+    transition: color 0.2s;
+    text-align: left;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .filter-list button::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .filter-list button.active {
+    color: var(--text);
+    font-weight: 400;
+  }
+  .filter-list button.active::before {
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+  .filter-list button:hover { color: var(--text); }
+
+  /* Sort */
+  .sort-select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Product Grid */
+  .shop-main {}
+  .shop-topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .shop-count {
+    font-size: 0.82rem; color: var(--text-light);
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.8rem;
+  }
+
+  .product-card {
+    background: var(--white);
+    border-radius: 3px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+  }
+  .product-img {
+    aspect-ratio: 4/5;
+    background: var(--sage-pale);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sage);
+    overflow: hidden;
+  }
+  .product-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .product-card:hover .product-img img { transform: scale(1.03); }
+
+  .product-badge {
+    position: absolute; top: 0.7rem; left: 0.7rem;
+    background: var(--sage); color: white;
+    font-size: 0.55rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.2rem 0.55rem;
+    border-radius: 2px; z-index: 1;
+  }
+
+  .product-info {
+    padding: 0.9rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .product-cat {
+    font-size: 0.55rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-light);
+    margin-bottom: 0.2rem;
+    text-align: right;
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    flex: 1;
+  }
+  .btn-add-cart {
+    width: 100%;
+    padding: 0.75rem 0.6rem 0.6rem;
+    background: var(--sage-dark); color: white;
+    border: none; border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-add-cart:hover { background: #3d5c3a; }
+  .btn-add-cart:disabled {
+    background: var(--border); cursor: not-allowed; color: var(--text-light);
+  }
+
+  /* Empty state */
+  .shop-empty {
+    grid-column: 1/-1;
+    text-align: center; padding: 5rem 0;
+    color: var(--text-light);
+  }
+  .shop-empty p { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; }
+
+  @media (max-width: 900px) {
+    .shop-layout { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+    .shop-sidebar { position: static; }
+    .filter-list { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
+    .filter-list button {
+      padding: 0.35rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+    }
+    .filter-list button.active { background: var(--sage); color: white; border-color: var(--sage); }
+    .filter-list button.active::before, .filter-list button::before { display: none; }
+  }
+  @media (max-width: 768px) {
+    .sort-select { width: auto; min-width: 160px; font-size: 0.88rem; padding: 0.5rem 0.75rem; }
+    .sidebar-section { margin-bottom: 0.8rem !important; }
+    .sidebar-label { font-size: 0.62rem !important; margin-bottom: 0.3rem !important; display: block; }
+    .shop-topbar { padding: 0 !important; margin-bottom: 0.1rem !important; border-bottom: none !important; }
+    .shop-count { font-size: 0.78rem !important; }
+    .products-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.75rem !important; }
+  }
+  @media (min-width: 769px) {
+    .shop-layout { display: block !important; }
+    .shop-sidebar { display: none !important; }
+    .shop-main { width: 100% !important; }
+    .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+
+
+<div class="page-content">
+  <div class="page-hero">
+    <div class="section-tag">Shop</div>
+    <h1>Handgemachte Stücke<br><em>zum Verlieben.</em></h1>
+  </div>
+
+  <div class="shop-layout">
+    <!-- SIDEBAR -->
+    <aside class="shop-sidebar">
+      <div class="sidebar-section">
+        <span class="sidebar-label">Kategorie</span>
+        <ul class="filter-list" id="catFilters">
+          <li><button class="active" onclick="filterCat(this,'alle')">Alle</button></li>
+          <li><button onclick="filterCat(this,'tiere')">Tiere</button></li>
+          <li><button onclick="filterCat(this,'figuren')">Figuren</button></li>
+          <li><button onclick="filterCat(this,'sonstiges')">Sonstiges</button></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <span class="sidebar-label">Sortierung</span>
+        <select class="sort-select" onchange="sortProducts(this.value)">
+          <option value="default">Standard</option>
+          <option value="price-asc">Preis: aufsteigend</option>
+          <option value="price-desc">Preis: absteigend</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS -->
+    <main class="shop-main">
+      <div class="shop-topbar">
+        <span class="shop-count" id="shopCount">3 Produkte</span>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <!-- Werden dynamisch geladen (später aus Supabase) -->
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <span class="footer-logo">von Feenhand</span>
+      <p class="footer-tagline">Handgefertigte Häkelfiguren aus Wien.<br>Jedes Stück ein Unikat.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Seiten</h4>
+      <ul>
+        <li><a href="about.html">Über mich</a></li>
+        <li><a href="galerie.html">Galerie</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Rechtliches</h4>
+      <ul>
+        <li><a href="#" onclick="openModal('impressum');return false;">Impressum</a></li>
+        <li><a href="#" onclick="openModal('datenschutz');return false;">Datenschutz</a></li>
+        <li><a href="#" onclick="openModal('agb');return false;">AGB</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 von Feenhand · Felicitas Anderlik</span>
+    <span>Gemacht mit ♥ und viel Garn</span>
+  </div>
+</footer>
+
+<!-- CART -->
+
+
+
+</div>
+
+
+<script src="header.js"></script>
+<script src="app.js"></script>
+<script>
+  let products = [];
+
+  let currentCat = 'alle';
+  let currentSort = 'default';
+
+  function renderProducts() {
+    let filtered = products.filter(p => currentCat === 'alle' || p.category === currentCat);
+
+    if (currentSort === 'price-asc') filtered.sort((a,b) => a.price - b.price);
+    else if (currentSort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+    else if (currentSort === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+
+    document.getElementById('shopCount').textContent = `${filtered.length} Produkt${filtered.length !== 1 ? 'e' : ''}`;
+
+    const grid = document.getElementById('productsGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="shop-empty"><p>Keine Produkte in dieser Kategorie.</p></div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card fade-in" style="${(() => { let h=true; if(p.color_data){try{const cd=JSON.parse(p.color_data);const co=Array.isArray(cd)?cd:[cd];h=co.some(c=>c.stock===undefined||c.stock===null||parseInt(c.stock)>0);}catch(e){h=parseInt(p.stock)>0;}}else{h=parseInt(p.stock)>0;} return !h&&!p.customizable?'opacity:0.7;':''; })()}cursor:pointer;" onclick="window.location.href='produkt.html?id='+encodeURIComponent('${p.id}')">
+        <div class="product-img">
+          ${p.images && p.images[0]
+            ? `<img src="${getImageUrl(p.images[0])}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">`
+            : `<svg width="44" height="44" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="16" width="48" height="36" rx="2"/><circle cx="24" cy="30" r="6"/><path d="M8 42l12-10 10 8 8-6 18 18"/></svg>`
+          }
+          ${p.stock === 0 && !p.customizable ? `
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;">
+              <span style="background:rgba(0,0,0,0.7);color:white;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.4rem 1rem;border-radius:2px;">Ausverkauft</span>
+            </div>` : p.stock === 0 && p.customizable ? `
+            <div style="position:absolute;top:0.5rem;right:0.5rem;">
+              <span style="background:var(--sage);color:white;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:2px;">Auf Anfrage</span>
+            </div>` : ''}
+          ${p.badge && p.stock > 0 ? `<span class="product-badge">${p.badge}</span>` : ''}
+          ${p.customizable ? `
+            <div style="position:absolute;bottom:0.6rem;left:0.6rem;background:var(--sage);color:white;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:2px;">
+              ✦ Individualisierbar
+            </div>` : ''}
+        </div>
+        <div class="product-info">
+          <div class="product-cat">${p.category || ''}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">€ ${p.price.toFixed(2).replace('.',',')}</div>
+          <button class="btn-add-cart" onclick="event.stopPropagation();window.location.href='produkt.html?id=${p.id}'">
+            Ansehen
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Re-observe new elements
+    document.querySelectorAll('.fade-in:not(.visible)').forEach(el => {
+      setTimeout(() => el.classList.add('visible'), 50);
+    });
+  }
+
+  function filterCat(btn, cat) {
+    document.querySelectorAll('#catFilters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = cat;
+    renderProducts();
+  }
+
+  function sortProducts(val) {
+    currentSort = val;
+    renderProducts();
+  }
+
+  async function loadProducts() {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = '<div class="shop-empty"><p style="font-style:normal;font-size:0.9rem;">Wird geladen...</p></div>';
+    try {
+      const data = await sbFetch('products', '?active=eq.true&order=created_at.desc');
+      products = data;
+      renderProducts();
+    } catch(e) {
+      grid.innerHTML = '<div class="shop-empty"><p>Produkte konnten nicht geladen werden.</p></div>';
+    }
+  }
+
+  loadProducts();
+</script>
+</body>
+</html>
