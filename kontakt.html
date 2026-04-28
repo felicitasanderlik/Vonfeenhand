@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kontakt – von Feenhand</title>
+<link rel="stylesheet" href="style.css">
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ── EMAILJS KONFIGURATION ──
+  // Diese Werte nach EmailJS Setup eintragen:
+  const EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';   // Account → API Keys
+  const EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';   // Email Services
+  const EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';  // Email Templates
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+</script>
+<style>
+  .kontakt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    padding: 5rem;
+    align-items: start;
+  }
+  .kontakt-info p {
+    font-size: 0.96rem; font-weight: 300;
+    line-height: 1.9; color: var(--text-light);
+    margin-bottom: 2.5rem;
+  }
+  .kontakt-links { display: flex; flex-direction: column; gap: 0.9rem; }
+  .k-link {
+    display: flex; align-items: center; gap: 1rem;
+    color: var(--text-light); font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  .k-link:hover { color: var(--sage-dark); }
+  .k-icon {
+    width: 40px; height: 40px;
+    background: var(--sage-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; color: var(--sage); flex-shrink: 0;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 1.3rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+  .form-group label {
+    font-size: 0.68rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-light);
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem; color: var(--text);
+    border-radius: 2px; outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--sage); }
+  .form-group textarea { min-height: 150px; }
+  .btn-sending { opacity: 0.7; cursor: not-allowed; }
+  @media (min-width: 769px) {
+    .kontakt-grid { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+    #contactSubmit { width: fit-content !important; min-width: 200px; }
+  }
+  @media (max-width: 900px) {
+    .kontakt-grid { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+
+<div class="page-content">
+  <div class="page-hero">
+    <div class="section-tag">Kontakt</div>
+    <h1>Hast du eine<br><em>Frage oder Anfrage?</em></h1>
+  </div>
+
+  <div class="kontakt-grid">
+    <div class="fade-in">
+      <p>
+        Ob du mehr über ein Stück wissen möchtest, eine individuelle Figur anfragen willst
+        oder einfach Hallo sagen möchtest — ich freue mich über jede Nachricht 
+        und antworte so schnell wie möglich!
+      </p>
+      <div class="kontakt-links" style="margin-top:1.5rem;">
+        <a href="mailto:hallo@vonfeenhand.at" class="k-link">
+          <span class="k-icon">✉</span>
+          hallo@vonfeenhand.at
+        </a>
+        <a href="https://instagram.com/vonfeenhand" class="k-link" target="_blank" rel="noopener">
+          <span class="k-icon">📷</span>
+          instagram.com/vonfeenhand
+        </a>
+        <a href="https://facebook.com/vonfeenhand" class="k-link" target="_blank" rel="noopener">
+          <span class="k-icon" style="font-weight:700;font-size:1rem;">f</span>
+          facebook.com/vonfeenhand
+        </a>
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <form class="contact-form" id="contactForm" onsubmit="handleContact(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vorname *</label>
+            <input type="text" id="cf_vorname" placeholder="Maria" required>
+          </div>
+          <div class="form-group">
+            <label>Nachname</label>
+            <input type="text" id="cf_nachname" placeholder="Muster">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-Mail *</label>
+          <input type="email" id="cf_email" placeholder="deine@email.at" required>
+        </div>
+        <div class="form-group">
+          <label>Betreff</label>
+          <select id="cf_betreff">
+            <option>Allgemeine Anfrage</option>
+            <option>Individuelle Figur anfragen</option>
+            <option>Frage zu einem Produkt</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nachricht *</label>
+          <textarea id="cf_nachricht" placeholder="Ich hätte eine Frage zu..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" id="contactSubmit" style="width:100%;padding:1rem;font-size:0.9rem;letter-spacing:0.14em;">
+          Nachricht senden
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="header.js"></script>
+<script src="app.js"></script>
+<script>
+async function handleContact(e) {
+  e.preventDefault();
+  const btn = document.getElementById('contactSubmit');
+  btn.textContent = 'Wird gesendet...';
+  btn.classList.add('btn-sending');
+  btn.disabled = true;
+
+  const params = {
+    from_name:  document.getElementById('cf_vorname').value + ' ' + document.getElementById('cf_nachname').value,
+    from_email: document.getElementById('cf_email').value,
+    subject:    document.getElementById('cf_betreff').value,
+    message:    document.getElementById('cf_nachricht').value,
+    to_name:    'Felicitas'
+  };
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    document.getElementById('contactForm').innerHTML = `
+      <div style="text-align:center;padding:3rem 0;">
+        <div style="font-size:2rem;margin-bottom:1rem;">✉️</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;margin-bottom:0.8rem;">Danke für deine Nachricht!</h3>
+        <p style="color:var(--text-light);">Ich melde mich so schnell wie möglich bei dir.</p>
+      </div>`;
+  } catch(err) {
+    console.error('EmailJS Fehler:', err);
+    btn.textContent = 'Nachricht senden';
+    btn.classList.remove('btn-sending');
+    btn.disabled = false;
+    alert('Fehler beim Senden. Bitte versuche es später noch einmal oder schreib direkt an hallo@vonfeenhand.at');
+  }
+}
+</script>
+</body>
+</html>

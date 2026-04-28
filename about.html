@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Über mich – von Feenhand</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    padding: 5rem;
+  }
+  .about-sticky { position: sticky; top: 100px; }
+  .about-photo {
+    aspect-ratio: 4/5;
+    background: var(--sage-pale);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sage);
+  }
+
+  .about-photo-label {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; letter-spacing: 0.1em;
+  }
+  .about-text-col { max-width: 560px; }
+  .about-text-col p {
+    font-size: 0.97rem; font-weight: 300;
+    line-height: 1.95; color: var(--text-light);
+    margin-bottom: 1.4rem;
+  }
+  .about-text-col p strong { color: var(--text); font-weight: 400; }
+  .signature {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-style: italic;
+    color: var(--sage-dark); margin: 2rem 0;
+    display: block;
+  }
+  .about-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .fact {
+    padding: 1.2rem;
+    background: var(--sage-pale);
+    border-radius: 2px;
+  }
+  .fact-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300;
+    color: var(--sage-dark);
+    display: block; margin-bottom: 0.2rem;
+  }
+  .fact-label {
+    font-size: 0.75rem; color: var(--text-light);
+    letter-spacing: 0.06em;
+  }
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 3rem; }
+    .about-sticky { position: static; }
+    .about-photo { aspect-ratio: 1; }
+  }
+  @media (min-width: 769px) {
+    .about-grid { padding: 80px 40px; min-height: auto; }
+    .page-hero { padding-left: 40px !important; padding-right: 40px !important; }
+    .about-stats { grid-template-columns: repeat(4, 1fr) !important; }
+    .about-text-col { max-width: 560px; }
+  }
+</style>
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+
+
+<div class="page-content">
+  <div class="page-hero">
+    <div class="section-tag">Über mich</div>
+    <h1>Hinter jeder Masche<br><em>steckt eine Geschichte.</em></h1>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-sticky fade-in">
+      <div class="about-photo" id="aboutPhoto">
+        <div class="about-photo-label" id="aboutPhotoPlaceholder">
+          <svg width="44" height="44" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="32" cy="24" r="12"/>
+            <path d="M8 56c0-13.3 10.7-24 24-24s24 10.7 24 24"/>
+          </svg>
+          Foto
+        </div>
+      </div>
+    </div>
+
+    <div class="about-text-col fade-in">
+      <div class="section-tag">Meine Geschichte</div>
+      <h2 class="section-title" style="margin-bottom:2rem;">Felicitas Anderlik<br><em>von Feenhand</em></h2>
+
+      <p id="aboutText1"></p>
+      <p id="aboutText2"></p>
+      <p id="aboutText3"></p>
+      <p>
+        Neben fertigen Stücken im Shop kannst du mich auch gerne für 
+        <strong>individuelle Anfragen</strong> kontaktieren — ich freue mich über 
+        jede Nachricht!
+      </p>
+
+      <span class="signature">Felicitas</span>
+
+      <a href="kontakt.html" class="btn btn-outline" style="width:fit-content;">Schreib mir</a>
+
+      <div class="about-facts">
+        <div class="fact">
+          <span class="fact-num">100%</span>
+          <span class="fact-label">Handarbeit</span>
+        </div>
+        <div class="fact">
+          <span class="fact-num">Unikat</span>
+          <span class="fact-label">Jedes Stück einzigartig</span>
+        </div>
+        <div class="fact">
+          <span class="fact-num">Wien</span>
+          <span class="fact-label">Gemacht in Österreich</span>
+        </div>
+        <div class="fact">
+          <span class="fact-num">♥</span>
+          <span class="fact-label">Mit viel Liebe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><span class="footer-logo">von Feenhand</span><p class="footer-tagline">Handgefertigte Häkelfiguren aus Wien.</p></div>
+    <div class="footer-col"><h4>Seiten</h4><ul><li><a href="about.html">Über mich</a></li><li><a href="galerie.html">Galerie</a></li><li><a href="shop.html">Shop</a></li><li><a href="kontakt.html">Kontakt</a></li></ul></div>
+    <div class="footer-col"><h4>Rechtliches</h4><ul><li><a href="#" onclick="openModal('impressum');return false;">Impressum</a></li><li><a href="#" onclick="openModal('datenschutz');return false;">Datenschutz</a></li><li><a href="#" onclick="openModal('agb');return false;">AGB</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 von Feenhand · Felicitas Anderlik</span><span>Gemacht mit ♥</span></div>
+</footer>
+
+
+</div>
+
+<script src="header.js"></script>
+<script src="app.js"></script>
+
+<script>
+setTimeout(async function() {
+  const SB_URL = 'https://uveihedjoqrdejycqqeu.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWloZWRqb3FyZGVqeWNxcWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTA4MDYsImV4cCI6MjA5MTQ4NjgwNn0.H6k7qrc_YMWgvKDqk-_nIYKQjJqVogBgx6EUFOTIhvo';
+  try {
+    const r1 = await fetch(SB_URL + '/rest/v1/settings?key=eq.about_image&select=value', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const d1 = await r1.json();
+    const imgPath = d1 && d1[0] ? d1[0].value : null;
+    if (!imgPath) return;
+    const r2 = await fetch(SB_URL + '/rest/v1/settings?key=eq.about_image_position&select=value', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const d2 = await r2.json();
+    const imgPos = d2 && d2[0] ? d2[0].value : '50% 50%';
+    const photo = document.getElementById('aboutPhoto');
+    const placeholder = document.getElementById('aboutPhotoPlaceholder');
+    if (!photo) return;
+    placeholder.style.display = 'none';
+    photo.style.background = 'none';
+    const img = new Image();
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:' + imgPos + ';position:absolute;inset:0;';
+    img.src = SB_URL + '/storage/v1/object/public/images/' + imgPath;
+    photo.style.position = 'relative';
+    photo.appendChild(img);
+  } catch(e) { console.log('About image error:', e); }
+
+  // Texte laden
+  try {
+    const rt = await fetch(SB_URL + '/rest/v1/settings?key=in.(about_text1,about_text2,about_text3)&select=key,value', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const dt = await rt.json();
+    dt.forEach(d => {
+      const num = d.key.replace('about_text', '');
+      const el = document.getElementById('aboutText' + num);
+      if (el && d.value) el.innerHTML = d.value;
+    });
+  } catch(e) { console.log('About text error:', e); }
+}, 500);
+</script>
+</body>
+</html>

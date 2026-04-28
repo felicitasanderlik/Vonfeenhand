@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Datenschutz – von Feenhand</title>
+<link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+<div class="page-content">
+  <div class="section" style="max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem;">
+    <div class="section-tag">Rechtliches</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;margin-bottom:2rem;">Datenschutzerklärung</h1>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Verantwortliche</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Felicitas Anderlik · von Feenhand · <span id="dsAddress">[...]</span> · <span id="dsEmail">[...]</span>
+    </p>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Welche Daten wir erheben</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Bei einer Bestellung erheben wir folgende Daten: Name, E-Mail-Adresse, Telefonnummer (optional) und Lieferadresse. Diese Daten werden ausschließlich zur Abwicklung deiner Bestellung verwendet.
+    </p>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Speicherung</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Deine Bestelldaten werden in einer gesicherten Datenbank (Supabase, Server in der EU) gespeichert. Wir geben deine Daten nicht an Dritte weiter, außer dies ist zur Bestellabwicklung notwendig.
+    </p>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Deine Rechte</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten. Wende dich dazu per E-Mail an [EMAIL].
+    </p>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Cookies</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Diese Website verwendet technisch notwendige Cookies für den Warenkorb. Es werden keine Tracking- oder Werbe-Cookies eingesetzt.
+    </p>
+
+    <h2 style="font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-dark);margin:1.5rem 0 0.5rem;">Kontakt Datenschutz</h2>
+    <p style="font-size:0.9rem;line-height:1.8;color:var(--text-light);">
+      Bei Fragen zum Datenschutz: <a id="dsEmailLink" href="#" style="color:var(--sage-dark);">E-Mail laden...</a>
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:2rem 0;">
+    <p style="font-size:0.78rem;color:var(--text-light);">
+      <a href="impressum.html" style="color:var(--sage-dark);">Impressum</a> ·
+      <a href="agb.html" style="color:var(--sage-dark);">AGB</a>
+    </p>
+  </div>
+</div>
+<script>
+const SB_URL_DS = 'https://uveihedjoqrdejycqqeu.supabase.co';
+const SB_KEY_DS = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2ZWloZWRqb3FyZGVqeWNxcWV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MTA4MDYsImV4cCI6MjA5MTQ4NjgwNn0.H6k7qrc_YMWgvKDqk-_nIYKQjJqVogBgx6EUFOTIhvo';
+async function loadContact() {
+  try {
+    const res = await fetch(SB_URL_DS + '/rest/v1/settings?key=in.(contact_address,contact_email)', {
+      headers: { 'apikey': SB_KEY_DS, 'Authorization': 'Bearer ' + SB_KEY_DS }
+    });
+    const data = await res.json();
+    data.forEach(d => {
+      if (d.key === 'contact_address' && document.getElementById('dsAddress')) document.getElementById('dsAddress').textContent = d.value;
+      if (d.key === 'contact_email') {
+        if (document.getElementById('dsEmail')) document.getElementById('dsEmail').textContent = d.value;
+        if (document.getElementById('dsEmailLink')) { document.getElementById('dsEmailLink').textContent = d.value; document.getElementById('dsEmailLink').href = 'mailto:' + d.value; }
+      }
+    });
+  } catch(e) {}
+}
+loadContact();
+</script>
+<script src="header.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
